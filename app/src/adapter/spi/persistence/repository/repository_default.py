@@ -1,7 +1,6 @@
 from typing import Any, List, TypeVar
 from abc import ABC, abstractmethod
 from src.port.spi.persistence.repository.repository import Repository
-from src.adapter.spi.persistence.model.customer import Customer
 # from src.adapter.spi.persistence.database.database import getSession
 from src.port.spi.persistence.database.database_port import DatabasePort
 from src.adapter.spi.persistence.database.database_mongodb import Database
@@ -13,9 +12,6 @@ T = TypeVar("T")
 
 # tipagem para primary key
 K = TypeVar("K")
-
-customerList : List[Customer] = [Customer(name='Joao', documentNumber='000.000.000-00', email='joao@email.com', phoneNumber='019987654321'),
-                                 Customer(name='Vitor', documentNumber='999.999.999-99', email='vitor@email.com', phoneNumber='019987654321')]
 
 # db: DatabasePort = Database[T,K]
 
