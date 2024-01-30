@@ -6,7 +6,7 @@ from src.port.usecase.payment_get_usecase import PaymentGetUseCase
 from src.core.usecase.payment_post_usecase import PaymentPostUseCaseImpl
 from src.core.usecase.payment_paid_usecase import PaymentPaidUseCaseImpl
 from src.core.usecase.payment_get_usecase import PaymentGetUseCaseImpl
-from src.adapter.spi.api.validator.validator import Validator
+# from src.adapter.spi.api.validator.validator import Validator
 from src.adapter.spi.api.mapper.payment_mapper import PaymentMapper
 from src.adapter.spi.api.schema.payment_request import PaymentRequest
 
@@ -17,7 +17,7 @@ __paymentPaidUseCase: PaymentPaidUseCase = PaymentPaidUseCaseImpl()
 __paymentGetUseCase: PaymentGetUseCase = PaymentGetUseCaseImpl()
 
 
-validator: Validator = Validator()
+# validator: Validator = Validator()
 
 @router.post(path='/', status_code=status.HTTP_201_CREATED)
 async def save(payment: PaymentRequest):
