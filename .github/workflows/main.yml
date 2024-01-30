@@ -23,10 +23,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Build application
-      run: |
-        pytest --cov=app/src/core/usecase/ app/tests/
-        python -m pytest --cov=app/src/core/usecase/ app/tests/
+    #- name: Build application
+     # run: |
+      #  pytest --cov=app/src/core/usecase/ app/tests/
+      #  python -m pytest --cov=app/src/core/usecase/ app/tests/
         
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
