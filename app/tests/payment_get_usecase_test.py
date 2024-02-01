@@ -3,8 +3,11 @@ from unittest.mock import patch
 from src.core.usecase.payment_get_usecase import PaymentGetUseCaseImpl
 from src.core.domain.enum.type_payment_enum import TypePayment
 from src.core.domain.payment import Payment
-from src.core.exception.business_exception import BusinessException
 from src.adapter.spi.persistence.model.payment import Payment as PaymentModel
+from src.adapter.spi.persistence.repository.payment_repository import PaymentRepository
+from src.adapter.spi.persistence.repository.repository_default import RepositoryDefault
+from src.core.exception.business_exception import BusinessException
+
 
 
 class PaymentPostUseCase(TestCase):
@@ -14,46 +17,41 @@ class PaymentPostUseCase(TestCase):
         self.paymentModelMock: PaymentModel = PaymentModel("1", TypePayment.DEBIT_CARD, 10.0)
         self.paymentMock: Payment = Payment("1", TypePayment.DEBIT_CARD, 10.0)
 
-    # @patch("src.core.usecase.payment_post_usecase.PaymentPostUseCaseImpl")
-    # @patch("src.adapter.spi.persistence.repository.repository_default.RepositoryDefault")
-    # @patch("src.adapter.spi.persistence.database.database_mongodb.Database")
-    # def test_getById_ok(self, mock_repository):
-    #     mock_repository.findById.return_value = {
-    #         '_id': '1',
-    #         'orderId': '1',
-    #         'type': 'DEBIT_CARD',
-    #         'amountPaid': 10.0 
-    #     }
-    #     # mock_usecase.__repository.findById.return_value = self.paymentModelMock
+    @patch.object(PaymentRepository, 'findById')
+    def test_getById_ok(self, mock_repository_findById):
+        mock_repository_findById.return_value = self.paymentModelMock
+        result = self.useCase.getById("1")
+        self.assertIsNotNone(result)
+        self.assertEqual(type(result), Payment)
+        self.assertEqual(result.orderId, "1")
 
-    #     id : str = self.paymentMock.id
-    #     result = self.useCase.getById("1")
-    #     self.assertIsNotNone(result)
-    #     # self.assertEqual(type(result), Payment)
-    #     # self.assertEqual(id, self.paymentMock.orderId)
-
-    # @patch("src.core.usecase.payment_post_usecase.PaymentPostUseCaseImpl")
-    # @patch("src.adapter.spi.persistence.repository.payment_repository.PaymentRepository")
-    # @patch("src.adapter.spi.persistence.repository.repository_default.RepositoryDefault")
-    # def test_getByIdAndDateTimePaid_ok(self, mock_usecase, mock_repositor, mock_repo_default):
-    #     mock_repo_default.db.findById.return_value = {
-    #         '_id': '1',
-    #         'orderId': '1',
-    #         'type': 'DEBIT_CARD',
-    #         'amountPaid': 10.0 
-    #     }
-    #     mock_usecase.findByFilterOne.return_value = self.paymentModelMock
-
-    #     id : str = self.paymentMock.id
-    #     result = self.useCase.getByIdAndDateTimePaid("1")
-    #     self.assertIsNotNone(result)
-        # self.assertEqual(type(result), Payment)
-        # self.assertEqual(id, self.paymentMock.orderId)
-
-    def test_savePayments_error(self):
+    def test_getById_error(self):
         id : str = self.paymentMock.id
         with self.assertRaises(BusinessException) as context:            
             self.useCase.getById(id)
-
         self.assertEqual(type(context.exception), BusinessException)
         self.assertTrue('Not found Payment by id:' in context.exception.detail)
+
+    @patch.object(PaymentRepository, 'findByOrderId')
+    def test_getByOrderId_ok(self, mock_repository_findByOrderId):
+        mock_repository_findByOrderId.return_value = [self.paymentModelMock]
+        result = self.useCase.getByOrderId("1")
+        self.assertIsNotNone(result)
+        self.assertEqual(type(result), list)
+        self.assertEqual(result[0].orderId, "1")
+
+    # @patch.object(PaymentRepository, 'findByOrderId')
+    # def test_getById_error(self, mock_repository_findByOrderId):
+    #     mock_repository_findByOrderId.return_value = BusinessException(status_code=404, detail="Not Found")
+    #     with self.assertRaises(BusinessException) as context:            
+    #         self.useCase.getByOrderId(None)
+    #     self.assertEqual(type(context.exception), BusinessException)
+    #     # self.assertTrue('Not found Payment by id:' in context.exception.detail)
+
+    @patch.object(PaymentRepository, 'findByFilterOne')
+    def test_getByIdAndDateTimePaid_ok(self, mock_repository_findByFilterOne):
+        mock_repository_findByFilterOne.return_value = self.paymentModelMock
+        result = self.useCase.getByIdAndDateTimePaid("1")
+        self.assertIsNotNone(result)
+        self.assertEqual(type(result), Payment)
+        self.assertEqual(result.orderId, "1")

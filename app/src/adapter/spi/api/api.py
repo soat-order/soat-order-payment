@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from app.src.adapter.spi.api.router.health_check_router import router as HealthCheck
-from app.src.adapter.spi.api.router.payment_router import router as PaymentRouter
+from src.adapter.spi.api.router.health_check_router import router as HealthCheck
+from src.adapter.spi.api.router.payment_router import router as PaymentRouter
 
 
 api_router = APIRouter()
