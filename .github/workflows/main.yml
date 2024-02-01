@@ -27,10 +27,7 @@ jobs:
     - name: Build application
       run: |
         tox -e py
-        echo pwd
-        ls /home/runner/work/soat-order-payment/soat-order-payment/app/src/core/usecase/
-        ls -la coverage.xml
-        cat coverage.xml | grep source
+        sed -i "s/<source>\/home\/runner\/work\/soat-order-payment\/soat-order-payment\/app\/src\/core\/usecase<\/source>/<source>\/github\/workspace<\/source>/g" /home/runner/work/soat-order-payment/soat-order-payment/coverage.xml
         
         
     - name: SonarCloud Scan
