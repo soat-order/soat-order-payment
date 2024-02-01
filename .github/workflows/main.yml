@@ -28,6 +28,7 @@ jobs:
       run: |
         tox -e py
         echo pwd
+        ls /home/runner/work/soat-order-payment/soat-order-payment/app/src/core/usecase/
         ls -la coverage.xml
         cat coverage.xml | grep source
         
