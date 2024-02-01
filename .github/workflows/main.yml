@@ -27,8 +27,9 @@ jobs:
     - name: Build application
       run: |
         tox -e py
-        ls -la
-        ls -la .coverage
+        echo pwd
+        ls -la coverage.xml
+        
         
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
