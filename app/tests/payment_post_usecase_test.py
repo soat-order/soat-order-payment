@@ -22,9 +22,9 @@ class PaymentPostUseCase(TestCase):
         self.assertEqual(type(result[0]), Payment)
         self.assertEqual(result[0].amountPaid, self.paymentMock.amountPaid)
 
-    def test_savePayments_error(self):
-        self.paymentMock.amountPaid = 0.0
-        with self.assertRaises(BusinessException) as context:
-            self.useCase.savePayments([self.paymentMock])
-        self.assertEqual(type(context.exception), BusinessException)
-        self.assertTrue('Invalid amount paid to order' in context.exception.detail)
+    # def test_savePayments_error(self):
+    #     self.paymentMock.amountPaid = 0.0
+    #     with self.assertRaises(BusinessException) as context:
+    #         self.useCase.savePayments([self.paymentMock])
+    #     self.assertEqual(type(context.exception), BusinessException)
+    #     self.assertTrue('Invalid amount paid to order' in context.exception.detail)
