@@ -29,6 +29,7 @@ jobs:
         tox -e py
         echo pwd
         ls -la coverage.xml
+        cat coverage.xml | grep source
         
         
     - name: SonarCloud Scan
