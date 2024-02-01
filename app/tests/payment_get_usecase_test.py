@@ -25,12 +25,12 @@ class PaymentPostUseCase(TestCase):
         self.assertEqual(type(result), Payment)
         self.assertEqual(result.orderId, "1")
 
-    # def test_getById_error(self):
-    #     id : str = self.paymentMock.id
-    #     with self.assertRaises(BusinessException) as context:            
-    #         self.useCase.getById(id)
-    #     self.assertEqual(type(context.exception), BusinessException)
-    #     self.assertTrue('Not found Payment by id:' in context.exception.detail)
+    def test_getById_error(self):
+        id : str = self.paymentMock.id
+        with self.assertRaises(BusinessException) as context:            
+            self.useCase.getById(id)
+        self.assertEqual(type(context.exception), BusinessException)
+        self.assertTrue('Not found Payment by id:' in context.exception.detail)
 
     @patch.object(PaymentRepository, 'findByOrderId')
     def test_getByOrderId_ok(self, mock_repository_findByOrderId):
@@ -46,7 +46,7 @@ class PaymentPostUseCase(TestCase):
     #     with self.assertRaises(BusinessException) as context:            
     #         self.useCase.getByOrderId(None)
     #     self.assertEqual(type(context.exception), BusinessException)
-    #     # self.assertTrue('Not found Payment by id:' in context.exception.detail)
+        # self.assertTrue('Not found Payment by id:' in context.exception.detail)
 
     @patch.object(PaymentRepository, 'findByFilterOne')
     def test_getByIdAndDateTimePaid_ok(self, mock_repository_findByFilterOne):
