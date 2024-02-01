@@ -26,7 +26,6 @@ jobs:
 
     - name: Build application
       run: |
-        export PYTHONPATH=$PWD/app
         tox -e py
         ls -la        
         
