@@ -25,7 +25,7 @@ jobs:
 
     - name: Build application
       run: |
-        export PYTHONPATH=$PYTHONPATH:$PWD/app
+        export PYTHONPATH=$PWD/app
         python -m pytest --cov=../app/src/core/usecase/ app/tests/
         
         
