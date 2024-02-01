@@ -26,8 +26,8 @@ jobs:
     - name: Build application
       run: |
         export PYTHONPATH=$PWD/app
-                pytest --junitxml=tests/report/test-results.xml --cov=./app/src/core/usecase/ --cov-report=xml 
-        
+        pytest --junitxml=tests/report/test-results.xml --cov=./app/src/core/usecase/ --cov-report=xml 
+        ls -la        
         
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
