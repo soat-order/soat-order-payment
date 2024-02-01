@@ -28,6 +28,8 @@ Github: https://github.com/Youngestdev/async-fastapi-mongo/blob/master/app/serve
 Github: https://testdriven.io/blog/fastapi-mongo/
 """
 
+db = None
+"""
 __engine_client = mongo_client.MongoClient(settings.DB_DATABASE_URL)
 db = __engine_client[settings.DB_DATABASE_NAME]
 UserTable = db.get_collection("user")
@@ -38,7 +40,7 @@ UserTable.create_index([("username", pymongo.ASCENDING)], unique=True)
 PaymentTable = db.get_collection("payment")
 ProductTable.create_index([("code", pymongo.ASCENDING)], unique=True)
 CustomerTable.create_index([("documentNumber", pymongo.ASCENDING)], unique=True)
-
+"""
 
 class Database(DatabasePort[T,K]):
     def __init__(self, modelType: T = None):
