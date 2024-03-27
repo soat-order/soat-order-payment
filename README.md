@@ -80,7 +80,9 @@ $deactivate
 pytest --cov=app/src/core/usecase/ app/tests/
 
 # gera relatorio
-pytest --junitxml=tests/test-results.xml --cov=./app/tests/ --cov-report=xml --cov-report=html
+pytest --junitxml=tests/test-results.xml --cov=./app/src/core/usecase/ --cov-report=xml --cov-report=html
+
+pytest --junitxml=tests/report/test-results.xml --cov=./app/src/core/usecase/ --cov-report=xml 
 
 # simples
 pytest -cov=codigo app/tests/
