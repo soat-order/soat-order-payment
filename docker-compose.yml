@@ -50,7 +50,7 @@ services:
     volumes:
       - "./app:/app"
       - "./requirements.txt:/app/requirements.txt"
-      - "$PWD/.env-prd:/app/.env-settings"
+      - "./.env-prd:/app/.env-settings"
     tty: true  
     command: >
       bash -c "python -u main.py
