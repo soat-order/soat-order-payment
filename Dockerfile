@@ -9,6 +9,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install dependencies
 COPY ./requirements.txt ./
+RUN echo ${PWD} && ls -lR
 COPY /app/.env-prd /app/.env-settings
 RUN apt upgrade
 RUN pip install --upgrade pip
