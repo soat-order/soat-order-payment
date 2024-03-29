@@ -22,11 +22,19 @@ class PaymentPostUseCaseImpl(PaymentPostUseCase):
         return payment
     
     def savePayments(self, payments: List[Payment]) -> List[Payment]:
-        Logger.info(method=Logger.getMethodCurrent(), message="Start of use case to save list payments")                
-        self.__validatePayments(payments=payments)
-        paymentsSaved = [self.save(payment) for payment in payments]
-        return paymentsSaved
-
+        try:
+            Logger.info(method=Logger.getMethodCurrent(), message="Start of use case to save list payments")                
+            self.__validatePayments(payments=payments)
+            paymentsSaved = [self.save(payment) for payment in payments]
+            return paymentsSaved
+        except BusinessException as ex:
+            raise ex
+        except Exception as ex:
+            Logger.error(method=Logger.getClassMethodCurrent(), message=f"Error occurred to save exception: {str(ex)}")
+            print(ex)
+            raise BusinessException(status_code=500,
+                    detail=f"Error occurred to save")
+    
     def __validatePayments(self, payments: List[Payment]):
         Logger.info(method=Logger.getMethodCurrent(), message="Start validate to payments")
         totalPaid : float = sum(p.amountPaid for p in payments)
