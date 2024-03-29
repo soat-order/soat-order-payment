@@ -1,12 +1,10 @@
 version: '3'
-
 services:
-
   mongodb:
     image: mongo:latest
     container_name: mongodb
     env_file:
-      - ./.env-settings
+      - ../app/.env-settings
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password123
@@ -16,6 +14,7 @@ services:
     ports:
       - '6000:27017'
     restart: always
+
 
   mongodb-express:
     image: mongo-express
@@ -33,10 +32,33 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: password123
       ME_CONFIG_MONGODB_URL: mongodb://admin:password123@mongodb:27017/
 
-  soat-order:
-    build: ./
-    image: soat-order/python:23.07    
-    container_name: soat-order
+
+  localstack:
+    container_name: localstack
+    hostname: sqs
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=sqs
+      - DEFAULT_REGION=sa-east-1
+      - AWS_DEFAULT_REGION=sa-east-1
+      - AWS_ACCESS_KEY_ID=soat-order
+      - AWS_SECRET_ACCESS_KEY=soat-order
+      - DEBUG=1
+      - PORT_WEB_UI=${PORT_WEB_UI-}
+    ports:
+      - "4566-4599:4566-4599"
+      - "${PORT_WEB_UI-9000}:${PORT_WEB_UI-8080}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./localstack_bootstrap.sh:/etc/localstack/init/ready.d/init-aws.sh
+
+
+  soat-order-payment:
+    build: ../
+    image: soat-order-payment/python:24.03    
+    container_name: soat-order-payment
+    env_file:
+      - ../app/.env-settings-prd
     restart: always
     environment:
       PYTHONDONTWRITEBYTECODE: 1
@@ -46,14 +68,15 @@ services:
     links:
       - mongodb
     depends_on:
-      - mongodb  
+      - mongodb
+      - localstack  
     volumes:
-      - "./app:/app"
-      - "./requirements.txt:/app/requirements.txt"
-      - "./.env-prd:/app/.env-settings"
+      - ../app:/app
+      - ../requirements.txt:/app/requirements.txt
+      - ../app/.env-settings-prd:/app/.env-settings
     tty: true  
     command: >
-      bash -c "python -u main.py
+      bash -c "python3 -u main.py
       && /bin/bash"
 
 volumes:

@@ -1,0 +1,23 @@
+version: "3"
+services:
+  localstack:
+    container_name: localstack
+    hostname: sqs
+    image: localstack/localstack:latest
+    # image: localstack/localstack:0.11.0
+    environment:
+      - SERVICES=sqs
+      - DEFAULT_REGION=sa-east-1
+      - AWS_DEFAULT_REGION=sa-east-1
+      - AWS_ACCESS_KEY_ID=soat-order
+      - AWS_SECRET_ACCESS_KEY=soat-order
+      - DEBUG=1
+      - PORT_WEB_UI=${PORT_WEB_UI-}
+    ports:
+      - "4566-4599:4566-4599"
+      - "${PORT_WEB_UI-9000}:${PORT_WEB_UI-8080}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      # - $HOME/.aws:/root/.aws:ro
+      # https://docs.localstack.cloud/references/init-hooks/
+      - ./localstack_bootstrap.sh:/etc/localstack/init/ready.d/init-aws.sh

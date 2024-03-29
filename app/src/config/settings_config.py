@@ -31,6 +31,6 @@ class Settings(BaseSettings):
 
     class Config:
         case_sesitive = True
-        env_file = '.env-settings'
+        env_file = './app/.env-settings'
 
 settings: Settings = Settings()
