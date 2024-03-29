@@ -1,19 +1,21 @@
-FROM python:3.9.16
+FROM python:3.9.18
 
 # set work directory
 WORKDIR /app
 
 # set env variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PIP_ROOT_USER_ACTION=ignore
 
 # install dependencies
 COPY ./requirements.txt ./
-RUN echo ${PWD} && ls -lR
-COPY /home/runner/work/soat-order-payment/soat-order-payment/app/.env-prd /home/runner/work/soat-order-payment/soat-order-payment/app/.env-settings
+COPY ./app/.env-settings-prd ./.env-settings
 RUN apt upgrade
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+RUN pip3 uninstall PyJWT -y
+RUN pip3 install PyJWT==2.8.0
 
 # copy project
 COPY ./app ./
