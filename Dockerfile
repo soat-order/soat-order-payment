@@ -1,4 +1,6 @@
-FROM python:3.9.18
+#FROM python:3.9.18
+FROM python:3.9.18-slim-bullseye
+
 
 # set work directory
 WORKDIR /app
@@ -11,7 +13,7 @@ ENV PIP_ROOT_USER_ACTION=ignore
 # install dependencies
 COPY ./requirements.txt ./
 COPY ./app/.env-settings-prd ./.env-settings
-RUN apt upgrade
+RUN apt update
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN pip3 uninstall PyJWT -y
