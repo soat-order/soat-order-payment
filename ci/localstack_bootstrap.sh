@@ -20,6 +20,7 @@ create_queue() {
     local QUEUE_NAME_TO_CREATE=$1
     # aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name ${QUEUE_NAME_TO_CREATE} --profile soat-order
     aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name ${QUEUE_NAME_TO_CREATE} --region $AWS_REGION
+    # aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name ${QUEUE_NAME_TO_CREATE}
 }
  
 create_queue "sqs-payment-order"
