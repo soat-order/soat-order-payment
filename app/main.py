@@ -17,6 +17,8 @@ app.add_middleware(
 )
 app.include_router(api_router, prefix=API_BASE_URL)
 
+app.mount("/", StaticFiles(directory="static"), name="static")
+
 def startUvicorn():
     import uvicorn
 
