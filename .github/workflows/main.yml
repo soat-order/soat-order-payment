@@ -27,7 +27,7 @@ jobs:
     - name: Build application
       run: |
         tox -e py
-        sed -i "s/<source>\/home\/runner\/work\/soat-order-food\/soat-order-food\/app\/src\/core\/usecase<\/source>/<source>\/github\/workspace\/app\/src\/core\/usecase<\/source>/g" /home/runner/work/soat-order-food/soat-order-food/coverage.xml
+        sed -i "s/<source>\/home\/runner\/work\/soat-order-payment\/soat-order-payment\/app\/src\/core\/usecase<\/source>/<source>\/github\/workspace\/app\/src\/core\/usecase<\/source>/g" /home/runner/work/soat-order-payment/soat-order-payment/coverage.xml
         cat coverage.xml | grep source
         
         
