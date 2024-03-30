@@ -42,10 +42,18 @@ ProductTable.create_index([("code", pymongo.ASCENDING)], unique=True)
 CustomerTable.create_index([("documentNumber", pymongo.ASCENDING)], unique=True)
 """
 
-__engine_client = mongo_client.MongoClient(settings.DB_DATABASE_URL)
-db = __engine_client[settings.DB_DATABASE_NAME]
-PaymentTable = db.get_collection("payment")
-PaymentTable.create_index([("orderId")], unique=False)
+
+db = None
+
+try:
+    __engine_client = mongo_client.MongoClient("{}?timeoutMS=20000".format(settings.DB_DATABASE_URL))
+    db = __engine_client[settings.DB_DATABASE_NAME]
+    PaymentTable = db.get_collection("payment")
+    PaymentTable.create_index([("orderId")], unique=False)
+except Exception as ex:
+    db = None
+
+
 
 
 

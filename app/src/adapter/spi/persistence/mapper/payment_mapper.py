@@ -1,7 +1,9 @@
 from typing import List, Any
 from src.adapter.spi.persistence.model.payment import Payment as PaymentModel
+from src.adapter.spi.sqs.schema.payment_order import PaymentOrder as PaymentOrderSchema
 from src.core.domain.payment import Payment
 from src.core.domain.enum.type_payment_enum import TypePayment
+from src.core.domain.enum.type_payment_status_enum import TypePaymentStatus
 
 
 class PaymentMapper:
@@ -55,3 +57,15 @@ class PaymentMapper:
     @staticmethod
     def parseDictToModelList(dictList: List[dict]) -> List[PaymentModel]:
         return list(PaymentMapper.parseDictToModel(dict) for dict in dictList)
+
+    @staticmethod
+    def parseToSchema(domainList: List[Payment]) -> PaymentOrderSchema:
+        payReceived = next(filter(lambda p: (p.type != TypePayment.MONEY and p.amountPaid <= 10.00), domainList), None)
+        totalPaid : float = sum(p.amountPaid for p in domainList)
+        paymentOrderSchema = PaymentOrderSchema(
+            orderId=domainList[0].orderId,
+            amountPaid=totalPaid,
+            dateTimePaid=domainList[0].dateTimePaid
+        )
+        paymentOrderSchema.status = TypePaymentStatus.RECEIVED if (payReceived == None) else TypePaymentStatus.CANCELED
+        return paymentOrderSchema

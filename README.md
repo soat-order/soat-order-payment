@@ -86,9 +86,18 @@ pytest --junitxml=tests/report/test-results.xml --cov=./app/src/core/usecase/ --
 
 # simples
 pytest -cov=codigo app/tests/
+```
 
+**AWS SQS**
+```
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name sqs-payment-order --region sa-east-1
+aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name sqs-payment-order --profile soat-order
+aws --endpoint-url http://localhost:4566 sqs list-queues --profile soat-order
+
+aws --endpoint-url http://localhost:4566 sqs send-message --queue-url http://localhost:4566/000000000000/sqs-payment-error --message-body '{"orderId": "dd997384-20f4-4967-bc2c-dbc8a015b742", "amountPaid": 17.0, "dateTimePaid": "2024-03-29T15:10:30.996891", "status": "CANCELED"}'
 
 ```
+
 
 **Dependencias Instalando**
 - **fastapi** lib de framework REST
