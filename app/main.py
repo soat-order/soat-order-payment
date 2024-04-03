@@ -10,7 +10,7 @@ API_BASE_URL = '/soat-order-payment/v1'
 app = FastAPI(title='SOAT Order v1.0')
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:8000"],
+    allow_origins=["http://localhost", "http://localhost:8001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]    

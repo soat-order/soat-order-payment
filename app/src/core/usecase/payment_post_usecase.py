@@ -51,7 +51,7 @@ class PaymentPostUseCaseImpl(PaymentPostUseCase):
         if (payment.type == TypePayment.MONEY):
             payment.dateTimePaid = datetime.now()
         else:
-            payment.dateTimePaid = datetime.now() if (payment.amountPaid % 2 != 0) else None
+            payment.dateTimePaid = datetime.now()
         return payment
     
     def __sendToGatewayPayment(self, payment: Payment):
