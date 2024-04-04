@@ -5,6 +5,7 @@ from src.core.domain.enum.type_payment_enum import TypePayment
 from src.core.domain.payment import Payment
 from src.adapter.spi.persistence.repository.payment_repository import PaymentRepository
 from src.core.exception.business_exception import BusinessException
+from src.adapter.spi.sqs.sqs_payment_producer import PaymentProducerImpl
 
 class PaymentPostUseCase(TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
@@ -13,9 +14,11 @@ class PaymentPostUseCase(TestCase):
         self.paymentMock: Payment = Payment("1", TypePayment.DEBIT_CARD, 10.0)
 
     #@patch("src.core.usecase.payment_post_usecase.PaymentPostUseCaseImpl")
-    @patch.object(PaymentRepository, 'save')    
+    @patch.object(PaymentRepository, 'save')
+    # @patch.object(PaymentProducerImpl, 'sendMessagePayment')    
     def test_savePayments_ok(self, mock_repository_save):
         mock_repository_save.return_value = self.paymentMock
+        # mock_payment_sendMessagePayment.return_value = None
         result = self.useCase.savePayments([self.paymentMock])        
         self.assertIsNotNone(result)
         self.assertEqual(len(result),1)

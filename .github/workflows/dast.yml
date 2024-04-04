@@ -17,7 +17,7 @@ jobs:
     - name: ZAP Scan
       uses: zaproxy/action-api-scan@v0.6.0
       with:
-        target: 'http://localhost:8000/soat-order-food/v1/health/actuator'
+        target: 'http://localhost:8001/soat-order-food/v1/health/actuator'
 
     - name: Stop containers
       if: always()
