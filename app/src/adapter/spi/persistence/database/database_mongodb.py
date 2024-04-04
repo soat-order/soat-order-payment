@@ -13,6 +13,7 @@ from src.port.spi.persistence.database.database_port import DatabasePort
 from src.core.exception.business_exception import BusinessException
 from decimal import Decimal
 from bson.decimal128 import Decimal128
+from src.core.util.logger_custom import Logger
 
 
 # tipagem para model
@@ -44,17 +45,13 @@ CustomerTable.create_index([("documentNumber", pymongo.ASCENDING)], unique=True)
 
 
 db = None
-
 try:
-    __engine_client = mongo_client.MongoClient("{}?timeoutMS=20000".format(settings.DB_DATABASE_URL))
+    __engine_client = mongo_client.MongoClient(host=settings.DB_DATABASE_URL, connectTimeoutMS=20000, socketTimeoutMS=20000)
     db = __engine_client[settings.DB_DATABASE_NAME]
     PaymentTable = db.get_collection("payment")
     PaymentTable.create_index([("orderId")], unique=False)
 except Exception as ex:
-    db = None
-
-
-
+    Logger.error(method="database_mongodb", message=f"Error connection database to mongodb exception: {str(ex)}")
 
 
 class Database(DatabasePort[T,K]):
