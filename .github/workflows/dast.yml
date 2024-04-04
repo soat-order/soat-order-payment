@@ -1,0 +1,25 @@
+name: Test Deploy and DAST
+
+on: workflow_dispatch
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Start containers
+      run: echo ${PWD} && ls -lR; docker-compose -f "docker-compose.yml" up -d --build
+
+    - name: ZAP Scan
+      uses: zaproxy/action-api-scan@v0.6.0
+      with:
+        target: 'http://localhost:8001/soat-order-food/v1/health/actuator'
+
+    - name: Stop containers
+      if: always()
+      run: docker-compose -f "docker-compose.yml" down
+      
