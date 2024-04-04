@@ -1,0 +1,29 @@
+version: '3'
+services:
+  soat-order-payment:
+    build: ../
+    image: soat-order-payment/python:24.03    
+    container_name: soat-order-payment
+    env_file:
+      - ../app/.env-settings-prd
+    restart: always
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+    working_dir: /app
+    ports:
+      - 8001:8001
+    networks:
+      - soat_order_net
+    volumes:
+      - ../app:/app
+      - ../requirements.txt:/app/requirements.txt
+      - ../app/.env-settings-prd:/app/.env-settings
+      - ./credentials:/root/.aws/credentials:ro
+    tty: true  
+    command: >
+      bash -c "python3 -u main.py
+      && /bin/bash"
+
+networks:
+    soat_order_net:
+        driver: "bridge"
