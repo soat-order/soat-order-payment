@@ -1,18 +1,19 @@
-name: SOAT application build and SonarCloud quality check
+name: CI
 
-on:
+on: 
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  SonarCloud-Quality-Test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.9]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -23,13 +24,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install tox
-
     - name: Build application
       run: |
         tox -e py
         sed -i "s/<source>\/home\/runner\/work\/soat-order-payment\/soat-order-payment\/app\/src\/core\/usecase<\/source>/<source>\/github\/workspace\/app\/src\/core\/usecase<\/source>/g" /home/runner/work/soat-order-payment/soat-order-payment/coverage.xml
         cat coverage.xml | grep source
-        cat coverage.xml
         
         
     - name: SonarCloud Scan
@@ -37,3 +36,54 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
+  codacy-SAST:
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+  
+    name: Codacy Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+    
+      - name: Run Codacy Analysis CLI
+        uses: codacy/codacy-analysis-cli-action@d840f886c4bd4edc059706d09c6a1586111c540b
+        with:
+          verbose: true
+          output: results.sarif
+          format: sarif
+          gh-code-scanning-compat: true
+          max-allowed-issues: 2147483647
+
+     
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
+  ZAP-dast:
+    permissions: write-all
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Start containers
+      run: cd ./ci/; docker-compose -f "docker-compose.yml" up -d --build
+
+    - name: ZAP Scan
+      uses: zaproxy/action-full-scan@v0.9.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        docker_name: 'owasp/zap2docker-stable'
+        target: 'http://localhost:8000'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'        
+
+    - name: Stop containers
+      if: always()
+      run: cd ./ci/ ; pwd; ls -la;  docker-compose -f "docker-compose.yml" down
